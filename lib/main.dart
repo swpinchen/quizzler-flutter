@@ -32,10 +32,35 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
 
-  void nextQuestion(){
+  var tickMark = (
+    Icon(
+        Icons.check,
+        color: Colors.green,
+        size: 24.0
+    )
+  );
+
+  var crossMark = (
+      Icon(
+          Icons.close,
+          color: Colors.red,
+          size: 24.0
+      )
+  );
+
+  void checkAnswer(bool userPickedAnswer) {
+    bool correctAnswer = quizBrain.getQuestionAnswer();
     setState(() {
+      if (correctAnswer == userPickedAnswer) {
+        print('user got it right');
+        scoreKeeper.add(tickMark);
+      } else {
+        print('user got it wrong');
+        scoreKeeper.add(crossMark);
+      }
       quizBrain.nextQuestion();
     });
+
   }
 
   @override
@@ -76,13 +101,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
               onPressed: () {
                 //The user picked true.
-                bool correctAnswer = quizBrain.getQuestionAnswer();
-                if (correctAnswer == true) {
-                  print('user got it right');
-                } else {
-                  print('user got it wrong');
-                }
-                nextQuestion();
+                checkAnswer(true);
               },
             ),
           ),
@@ -103,18 +122,15 @@ class _QuizPageState extends State<QuizPage> {
               ),
               onPressed: () {
                 //The user picked false.
-                bool correctAnswer = quizBrain.getQuestionAnswer();
-                if (correctAnswer == false) {
-                  print('user got it right');
-                } else {
-                  print('user got it wrong');
-                }
-                nextQuestion();
+                checkAnswer(false);
               },
             ),
           ),
         ),
         //TODO: Add a Row here as your score keeper
+        Row(
+          children: scoreKeeper
+        )
       ],
     );
   }
